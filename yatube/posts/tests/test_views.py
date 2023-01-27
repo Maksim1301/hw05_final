@@ -73,7 +73,7 @@ class PostPagesTests(TestCase):
             self.authorized_client.get(
                 reverse('posts:profile',
                         kwargs={'username': f'{self.user.username}'})))
-        for response in response_tuple:                
+        for response in response_tuple:
             self.assertIn('page_obj', response.context)
         for response in response_tuple:
             context_objects = {
@@ -83,7 +83,7 @@ class PostPagesTests(TestCase):
                 self.post.image: response.context['page_obj'][0].image}
             for reverse_name, response_name in context_objects.items():
                 with self.subTest(reverse_name=reverse_name):
-                    self.assertEqual(response_name, reverse_name)   
+                    self.assertEqual(response_name, reverse_name)
 
     def test_post_detail_page_show_correct_context(self):
         """Шаблон post_detail сформирован с правильным контекстом."""
@@ -255,7 +255,7 @@ class FollowViewsTest(TestCase):
 
     def test_new_post_follow_to_author(self):
         """Новая запись будет у тех кто подписан."""
-        post = Post.objects.create(
+        Post.objects.create(
             author=self.author,
             text='Тестовый текст')
         self.assertEqual(Follow.objects.count(), 0)
