@@ -10,11 +10,9 @@ from .utils import padinator_page
 @cache_page(20, key_prefix='index_page')
 def index(request):
     """"Главная страница"""
-    text = 'Последние обновления на сайте'
     page_obj = padinator_page(Post.objects.all(), request)
     context = {
         'page_obj': page_obj,
-        'text': text,
     }
     return render(request, 'posts/index.html', context)
 
@@ -36,11 +34,10 @@ def profile(request, username):
     author = get_object_or_404(User, username=username)
     page_obj = padinator_page(Post.objects.filter(author=author).all(),
                               request)
-    following_flag = False
-    if (request.user.is_authenticated and Follow.objects.filter(
-        user=request.user,
-            author=author).exists()):
-        following_flag = True
+    following_flag = (request.user.is_authenticated
+                      and Follow.objects.filter(
+                        user=request.user,
+                        author=author).exists())
     context = {
         'author': author,
         'page_obj': page_obj,
@@ -117,14 +114,12 @@ def add_comment(request, post_id):
 @login_required
 def follow_index(request):
     """"Подписаться на автора"""
-    text = 'Подписки пользователя'
     page_obj = padinator_page(
         Post.objects.filter(
             author__following__user=request.user),
         request)
     context = {
         'page_obj': page_obj,
-        'text': text,
     }
     return render(request, 'posts/follow.html', context)
 

@@ -31,15 +31,15 @@ urlpatterns = [
     path('posts/<int:post_id>/comment/',
          views.add_comment,
          name='add_comment'),
-    #
+    # страница подписок
     path('follow/',
          views.follow_index,
          name='follow_index'),
-    #
+    # страница подписки на автора
     path('profile/<str:username>/follow/',
          views.profile_follow,
          name='profile_follow'),
-    #
+    # страница отписки от автора
     path('profile/<str:username>/unfollow/',
          views.profile_unfollow,
          name='profile_unfollow'),

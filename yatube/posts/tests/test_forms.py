@@ -123,11 +123,20 @@ class PostFormTests(TestCase):
         comment = Comment.objects.create(
             post=self.post,
             author=self.user,
-            text='Тестовый текст')
+            text='Текст комментария')
+        comment_count = Comment.objects.count()
         form_data = {'text': comment}
         response = self.authorized_client.get(
             reverse('posts:post_detail',
                     kwargs={'post_id': self.post.id}),
             data=form_data,
             follow=True)
-        self.assertContains(response, 'Тестовый текст')
+        new_comment = Comment.objects.get(id=self.post.id)
+        self.assertContains(response, 'Текст комментария')
+        values = {
+            comment.text: new_comment.text,
+            self.user: new_comment.author}
+        for value, value_comment in values.items():
+            with self.subTest(value=value):
+                self.assertEqual(value, value_comment)
+        self.assertEqual(Comment.objects.count(), comment_count)

@@ -56,6 +56,7 @@ class PostPagesTests(TestCase):
                 reverse('posts:post_detail',
                         kwargs={'post_id': f'{self.post.id}'})),
             'posts/create_post.html': reverse('posts:post_create'),
+            'posts/follow.html': reverse('posts:follow_index')
         }
         for template, reverse_name in templates_page_names.items():
             with self.subTest(template=template):
@@ -250,7 +251,7 @@ class FollowViewsTest(TestCase):
         self.assertEqual(Follow.objects.count(), 0)
         following = Follow.objects.filter(
             author=self.author,
-            user=self.follower)
+            user=self.follower).exists()
         self.assertFalse(following)
 
     def test_new_post_follow_to_author(self):
@@ -259,7 +260,11 @@ class FollowViewsTest(TestCase):
             author=self.author,
             text='Тестовый текст')
         self.assertEqual(Follow.objects.count(), 0)
-        self.authorized_client.get(
+        response = self.authorized_client.get(
             reverse('posts:profile_follow',
                     args=(self.author.username,)))
         self.assertEqual(Follow.objects.count(), 1)
+        self.assertRedirects(
+            response,
+            reverse('posts:profile',
+                    args=(self.author,)))
