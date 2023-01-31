@@ -120,21 +120,18 @@ class PostFormTests(TestCase):
 
     def test_add_comment(self):
         """Тестирование добавление комментариев."""
-        comment = Comment.objects.create(
-            post=self.post,
-            author=self.user,
-            text='Текст комментария')
-        comment_count = Comment.objects.count()
-        form_data = {'text': comment}
-        response = self.authorized_client.get(
-            reverse('posts:post_detail',
+        form_data = {'text': 'Текст комментария',
+                     'author': self.user}
+        response = self.authorized_client.post(
+            reverse('posts:add_comment',
                     kwargs={'post_id': self.post.id}),
             data=form_data,
             follow=True)
+        comment_count = Comment.objects.count()
         new_comment = Comment.objects.get(id=self.post.id)
         self.assertContains(response, 'Текст комментария')
         values = {
-            comment.text: new_comment.text,
+            form_data['text']: new_comment.text,
             self.user: new_comment.author}
         for value, value_comment in values.items():
             with self.subTest(value=value):

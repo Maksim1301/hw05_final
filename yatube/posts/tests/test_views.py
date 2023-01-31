@@ -256,15 +256,16 @@ class FollowViewsTest(TestCase):
 
     def test_new_post_follow_to_author(self):
         """Новая запись будет у тех кто подписан."""
-        Post.objects.create(
+        post = Post.objects.create(
             author=self.author,
             text='Тестовый текст')
         self.assertEqual(Follow.objects.count(), 0)
-        response = self.authorized_client.get(
+        self.authorized_client.get(
             reverse('posts:profile_follow',
                     args=(self.author.username,)))
         self.assertEqual(Follow.objects.count(), 1)
-        self.assertRedirects(
-            response,
-            reverse('posts:profile',
-                    args=(self.author,)))
+        response = self.authorized_client.get(
+            reverse('posts:follow_index'),
+            args=(self.author.username,))
+        self.assertEqual = (response.context['page_obj'][0].text,
+                            post.text)
