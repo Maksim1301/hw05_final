@@ -28,6 +28,10 @@ pip install -r requirements.txt
 ```python
 python manage.py migrate
 ```
+Создаем супер пользователя:
+```python
+python manage.py createsuperuser
+```
 Запустить проект:
 ```python
 python manage.py runserver
